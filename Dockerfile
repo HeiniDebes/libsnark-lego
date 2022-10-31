@@ -1,18 +1,19 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 
-WORKDIR /root
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && \
-    apt-get install -y \
-    wget unzip curl \
-    build-essential cmake git libgmp3-dev libprocps4-dev python-markdown libboost-all-dev libssl-dev pkg-config
+RUN apt-get update && apt-get install -y \
+    build-essential cmake git \
+    libgmp3-dev libprocps-dev python-markdown python3-markdown libboost-all-dev libssl-dev pkg-config libsodium-dev \
+    default-jre default-jdk
 
-RUN git clone https://github.com/scipr-lab/libsnark/ \
-  && cd libsnark \
-  && git submodule init && git submodule update \
-  && mkdir build && cd build && cmake .. \
-  && make \
-  && DESTDIR=/usr/local make install \
-    NO_PROCPS=1 NO_GTEST=1 NO_DOCS=1 CURVE=ALT_BN128 FEATUREFLAGS="-DBINARY_OUTPUT=1 -DMONTGOMERY_OUTPUT=1 -DNO_PT_COMPRESSION=1"
+COPY . /app
 
-ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/lib
+WORKDIR /app
+
+RUN git submodule init && git submodule update \
+  && sed -i 's/<libff\/algebra\/fields\/field_utils.hpp>/<libff\/algebra\/field_utils\/field_utils.hpp>/' /app/depends/libfqfft/libfqfft/evaluation_domain/domains/basic_radix2_domain_aux.tcc \
+  && sed -i 's/<libff\/algebra\/fields\/field_utils.hpp>/<libff\/algebra\/field_utils\/field_utils.hpp>/' /app/depends/libfqfft/libfqfft/evaluation_domain/domains/basic_radix2_domain.tcc \
+  && mkdir build && cd build \
+  && cmake -DMULTICORE=ON -DPERFORMANCE=ON .. \
+  && make

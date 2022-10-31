@@ -88,7 +88,21 @@ int main(int argc, char **argv) {
 	
 	bool successBit = false;
 	successBit = libsnark::run_lego<libsnark::default_r1cs_gg_ppzksnark_pp>(relation_and_input);
-	
+
+	for (size_t i = 0; i < relation_and_input.ck.size(); i++) {
+		cout << "ck[" << i << "] = ";
+		relation_and_input.ck[i].print();
+	}
+	for (size_t i = 0; i < relation_and_input.opn.size(); i++) {
+		cout << "opn[" << i << "] = ";
+		relation_and_input.opn[i].print();
+	}
+	cout << "commitment = ";
+	relation_and_input.cm.print();
+	for (size_t i = 0; i < relation_and_input.omega.size(); i++) {
+		cout << "omega[" << i << "] = ";
+		relation_and_input.omega[i].print();
+	}
 
 	if(!successBit){
 		cout << "Problem occurred while running the ppzksnark algorithms .. " << endl;

@@ -55,35 +55,6 @@ add_library(
   relations/ram_computations/rams/fooram/fooram_aux.cpp
   relations/ram_computations/rams/tinyram/tinyram_aux.cpp
 )
-add_library(
-  membership 
-  STATIC
-
-  zk_proof_systems/ppzksnark/membership/membership.cpp
-)
-target_include_directories(
-  membership
-  PUBLIC
-
-  snark
-  ${DEPENDS_DIR}/libfqfft
-  ${DEPENDS_DIR}/libff
-)
-target_link_libraries(
-  membership
-
-  OpenSSL::Crypto
-  gmp
-  flint
-
-  ff
-  ${GMP_LIBRARIES}
-  ${GMPXX_LIBRARIES}
-  ${CRYPTO_LIBRARIES}
-  ${PROCPS_LIBRARIES}
-  ${LIBFF_LIBRARIES}
-  ${SNARK_EXTRALIBS}
-)
 if("${USE_LINKED_LIBRARIES}")
   target_link_libraries(
     snark
@@ -378,29 +349,6 @@ target_link_libraries(
 
   snark
   ${Boost_LIBRARIES}
-)
-
-# Membership
-set(
-  ${SOURCE_FILES}
-
-  zk_proof_systems/ppzksnark/membership/MembershipTest.cpp
-  zk_proof_systems/ppzksnark/membership/membership.cpp
-)
-include_directories("zk_proof_systems/ppzksnark/membership")
-
-add_executable(
-  Membershiptest
-
-  zk_proof_systems/ppzksnark/membership/MembershipTest.cpp
-  zk_proof_systems/ppzksnark/membership/membership.cpp
-)
-
-target_link_libraries(
-  Membershiptest
-  membership
-
-  snark
 )
 
 # Tests
@@ -780,30 +728,6 @@ set_target_properties(run_lego
     RUNTIME_OUTPUT_DIRECTORY "jsnark_lego_interface/"
 )
 
-
-add_executable(
-  bench_setmem_lego
-
-  jsnark_lego_interface/Util.hpp
-  jsnark_lego_interface/Util.cpp
-  jsnark_lego_interface/CircuitReader.hpp
-  jsnark_lego_interface/CircuitReader.cpp
-  jsnark_lego_interface/bench_setmem_lego.cpp
-  jsnark_lego_interface/benchmark.h
-  jsnark_lego_interface/benchmark.cc
-)
-target_link_libraries(
-  bench_setmem_lego
-
-  snark
-)
-
-set_target_properties(bench_setmem_lego
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "jsnark_lego_interface/"
-    LIBRARY_OUTPUT_DIRECTORY "jsnark_lego_interface/"
-    RUNTIME_OUTPUT_DIRECTORY "jsnark_lego_interface/"
-)
 
 include(CTest)
 add_test(

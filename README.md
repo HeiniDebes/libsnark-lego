@@ -1,38 +1,26 @@
-libsnark-lego: libsnark with Lego capabilities (compatible w/ JSnark)
+Fork of: libsnark-lego: libsnark with Lego capabilities (compatible w/ JSnark) by Matteo Campanelli
 ================================================================================
 
 This repo contains mainly:
 - an extension of libsnark with Lego capabilities (see [LegoSNARK](https://eprint.iacr.org/2019/142) paper). The repo includes in particular an implementation of LegoGro16 (a commit-and-prove version of Groth16). The code is for benchmarking purposes.
-- a good deal of the code used to benchmark SNARKs for accumulators in the [HARiSA](https://eprint.iacr.org/2021/1672) paper (title "Succinct Zero-Knowledge Batch Proofs for Set Accumulators" by Campanelli et al.). Other code for HARiSA (DID and circuit generation) is available upon request.
 
 The bulk of the code for the Lego extensions of Groth16 are in `libsnark/zk_proof_systems/ppzksnark/r1cs_gg_ppzksnark`.
-The bulk of the code for HARiSA is in `libsnark/jsnark_lego_interface/bench_setmem_lego.cpp`.
-
 
 (Note that this repo is forked from the jsnark's fork of the libsnark library. It therefore follows the same structure and has lots of additional code unrelated to Harisa. Jsnark is authored by Ahmed Kosba; libsnark by SCIPR-LAB and various contributors)
 
-
-Author: Matteo Campanelli
-
 ## Building Instructions
 
-To build the benchmarks code, first follow the cmake preliminaries as from libsnark (below).
-Then, from the "build" directory launch:
+To build the code using Docker:
 
-`make -j8 bench_setmem_lego`
+`docker build -t lego .`
 
-To run:
+To enter container (while exposing the current working directory to the container; assuming this is where the circuits and inputs to test are stored):
 
-`libsnark/jsnark_lego_interface/bench_setmem_lego`(plus appropriate parameters)
+`docker run -it --rm --volume="$(pwd)"/:/home/ lego`
 
-### Known building issues
+To run against a compiled circuit and its formatted input from xjsnark run:
 
-We are aware that, on certain machines, a fresh setup may fail during building complaining about libff missing headers. This is unfortunately a retrocompatibility break that we inherited ourselves. There are fixes, but they are heuristic and platform-dependent. We recommend trying 
-`sudo make install`
-from `build/depende/libff` and try and build after doing that as an option.
-
-The code is not actively maintained. You are welcome to contact us to notify with issues or give us suggestions.
-
+`./build/libsnark/jsnark_lego_interface/run_lego gg /home/<circuit>.arith /home/<circuit>_Sample_Run1.in`
 
 # Original README from libsnark library from here
 
